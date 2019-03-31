@@ -2,19 +2,20 @@ import { Module, Logger } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Connection } from 'typeorm';
-import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ArtworkModule } from './artwork/artwork.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { ArtworkModule } from './modules/artwork/artwork.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthController } from './modules/auth/auth.controller';
 
 @Module({
   imports: [TypeOrmModule.forRoot(), UserModule, ArtworkModule, AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AuthController],
+  providers: [AppService, AuthService],
 })
 export class AppModule {
-  constructor(private readonly connection: Connection) {
-    connection.runMigrations();
+  constructor(private connection: Connection) {
     Logger.log(
       `Database connection initialized at: ${connection.options['host']}:${
         connection.options['port']
